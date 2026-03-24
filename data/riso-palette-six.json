@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Sunflower",
+    "hex": "#ffb511",
+    "pantone": "116 U",
+    "zType": "S-4654"
+  },
+  {
+    "name": "Fluorescent Pink",
+    "hex": "#ff48b0",
+    "pantone": "806 U",
+    "zType": "S-4287"
+  },
+  {
+    "name": "Black",
+    "hex": "#000000",
+    "pantone": "BLACK U"
+  },
+  {
+    "name": "Aqua",
+    "hex": "#5ec8e5",
+    "pantone": "637 U",
+    "zType": "S-4917"
+  },
+  {
+    "name": "Violet",
+    "hex": "#9d7ad2",
+    "pantone": "265 U",
+    "zType": "S-4641"
+  },
+  {
+    "name": "Light Lime",
+    "hex": "#e3ed55",
+    "pantone": "387 U",
+    "zType": "S-4653"
+  }
+]
