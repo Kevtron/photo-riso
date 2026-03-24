@@ -1,6 +1,6 @@
 # photo-riso
 
-Separate a photograph into **k** dominant colors using **k-means in CIELAB**, then export **grayscale separation masks** (one PNG per color) plus a JSON summary of centroid colors. Optional **ink palette mapping** suggests which named spot inks best match each cluster for risograph-style workflows.
+Separate a photograph into **k** dominant colors using **k-means in CIELAB**, then export **grayscale separation masks** (one PNG per color) plus a JSON summary of centroid colors. A **`preview.png`** stacks those masks as an **additive RGB composite** tinted by each layer’s color (cluster sRGB by default, or **mapped ink RGB** when `--ink-palette` is set). Optional **ink palette mapping** suggests which named spot inks best match each cluster for risograph-style workflows.
 
 Clustering is perceptual (LAB space, D65, sRGB with proper gamma). Transparent pixels are **composited on white** before analysis. Mask dimensions match the source image for registration across plates.
 
@@ -34,6 +34,7 @@ photo-riso -i path/to/image.png -o path/to/out
 | File | Description |
 |------|-------------|
 | `mask_01_<mode>.png` … `mask_k_<mode>.png` | Single-channel masks; cluster `01` is the **most prevalent** color after sorting |
+| `preview.png` | RGB image: each mask is scaled by its layer color and **summed** (screen-style preview; not physical ink overprint). Omitted if `--no-preview` |
 | `colors.json` | Per cluster: `rgb`, `hex`, `lab` (CIELAB centroid) |
 | `mapping.json` | Only if `--ink-palette` is set: suggested ink per cluster, ΔE, flags |
 
@@ -54,6 +55,7 @@ photo-riso -i path/to/image.png -o path/to/out
 | `--ink-palette` | — | JSON file listing inks (see below) |
 | `--ink-map-mode` | `nearest` | `nearest`, `assign` (one-to-one Hungarian), or `family` (relationship-aware) |
 | `--ink-family-alpha` | `0.5` | Blend ΔE vs pairwise geometry for `family` |
+| `--no-preview` | off | Do not write `preview.png` |
 
 Run `python -m photo_riso --help` for the full list.
 

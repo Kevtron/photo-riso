@@ -10,8 +10,9 @@ from PIL import Image
 
 from photo_riso.cluster import pixel_centroid_distances, segment_image
 from photo_riso.ink_map import map_inks
-from photo_riso.lab_colors import rgb_uint8_to_lab
+from photo_riso.lab_colors import lab_vector_to_rgb_uint8, rgb_uint8_to_lab
 from photo_riso.masks import build_masks
+from photo_riso.preview import composite_masks_rgb
 
 
 def _five_color_image(h: int = 50, w: int = 50) -> np.ndarray:
@@ -29,6 +30,18 @@ def _five_color_image(h: int = 50, w: int = 50) -> np.ndarray:
         y0, y1 = i * band, (i + 1) * band if i < 4 else h
         img[y0:y1, :, :] = c
     return img
+
+
+def test_composite_preview_binary_matches_layer_colors():
+    rgb = _five_color_image(30, 30)
+    seg = segment_image(rgb, k=5, sample_size=2000, random_state=7)
+    lab = rgb_uint8_to_lab(seg.rgb)
+    dists = pixel_centroid_distances(lab, seg.centroids_lab)
+    masks = build_masks(seg.labels, dists, 5, mode="binary")
+    layer_rgb = lab_vector_to_rgb_uint8(seg.centroids_lab)
+    prev = composite_masks_rgb(masks, layer_rgb)
+    expected = layer_rgb[seg.labels]
+    assert np.array_equal(prev, expected)
 
 
 def test_segment_binary_masks_mutually_exclusive():
@@ -99,6 +112,7 @@ def test_cli_writes_outputs(tmp_path: Path):
     out = tmp_path / "out"
     for i in range(5):
         assert (out / f"mask_{i + 1:02d}_binary.png").is_file()
+    assert (out / "preview.png").is_file()
     data = json.loads((out / "colors.json").read_text(encoding="utf-8"))
     assert len(data) == 5
     assert all("lab" in row for row in data)

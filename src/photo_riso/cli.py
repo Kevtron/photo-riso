@@ -8,12 +8,14 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
 from photo_riso.cluster import pixel_centroid_distances, segment_image
 from photo_riso.image_io import load_rgb_uint8
 from photo_riso.ink_map import load_palette, map_inks, mappings_to_json
 from photo_riso.lab_colors import lab_vector_to_rgb_uint8, rgb_to_hex, rgb_uint8_to_lab
 from photo_riso.masks import apply_dither, build_masks, save_mask_png
+from photo_riso.preview import composite_masks_rgb
 
 
 def _colors_payload(centroids_lab: np.ndarray) -> list[dict]:
@@ -58,6 +60,11 @@ def main(argv: list[str] | None = None) -> int:
         default="nearest",
     )
     p.add_argument("--ink-family-alpha", type=float, default=0.5)
+    p.add_argument(
+        "--no-preview",
+        action="store_true",
+        help="Skip writing preview.png (masks tinted and summed in sRGB).",
+    )
     args = p.parse_args(argv)
 
     rgb = load_rgb_uint8(args.input)
@@ -96,6 +103,7 @@ def main(argv: list[str] | None = None) -> int:
         encoding="utf-8",
     )
 
+    layer_rgb = lab_vector_to_rgb_uint8(seg.centroids_lab)
     if args.ink_palette is not None:
         palette = load_palette(args.ink_palette)
         mappings = map_inks(
@@ -107,6 +115,13 @@ def main(argv: list[str] | None = None) -> int:
         (args.output_dir / "mapping.json").write_text(
             json.dumps(mappings_to_json(mappings), indent=2),
             encoding="utf-8",
+        )
+        layer_rgb = np.array([m.assigned_ink_rgb for m in mappings], dtype=np.uint8)
+
+    if not args.no_preview:
+        preview = composite_masks_rgb(masks, layer_rgb)
+        Image.fromarray(preview, mode="RGB").save(
+            args.output_dir / "preview.png",
         )
 
     return 0
