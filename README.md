@@ -80,6 +80,10 @@ On Unix shells, use `\` for line continuation instead of `^`.
 
 For `--ink-map-mode assign` or `family`, the palette must contain **at least `--k` inks**. Use `nearest` if you allow the same ink for multiple clusters.
 
+### Batch sweep (k = 3, 4, 5)
+
+`scripts/batch_all_mask_combos.py` runs **84** jobs: every mix of `--mask-mode`, `--dither`, and no-ink vs `data/riso-palette-six.json` with each `--ink-map-mode`, for `k` 3–5. Outputs go to `batch_outputs/<run_id>/` (gitignored). Each folder includes **`command.txt`** with the exact invocation. A master list is **`batch_outputs/INDEX.txt`**. Put your photo at **`examples/input.png`** (or change `INPUT` in the script).
+
 ### Development
 
 ```bash
