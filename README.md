@@ -82,7 +82,7 @@ For `--ink-map-mode assign` or `family`, the palette must contain **at least `--
 
 ### Batch sweep (k = 3, 4, 5)
 
-`scripts/batch_all_mask_combos.py` runs **84** jobs: every mix of `--mask-mode`, `--dither`, and no-ink vs `data/riso-palette-six.json` with each `--ink-map-mode`, for `k` 3–5. Outputs go to `batch_outputs/<run_id>/` (gitignored). Each folder includes **`command.txt`** with the exact invocation. A master list is **`batch_outputs/INDEX.txt`**. Put your photo at **`examples/input.png`** (or change `INPUT` in the script).
+`scripts/batch_all_mask_combos.py` scans an **input directory** (default: `examples/`) for images (PNG, JPEG, WebP, TIFF, BMP, GIF). For **each** file it runs **63** jobs: every mix of `--mask-mode`, `--dither`, and `data/riso-palette-six.json` with each `--ink-map-mode` (`nearest` / `assign` / `family`), for `k` 3–5. (No centroid-only / no-ink runs.) Outputs go to **`batch_outputs/<sanitized_filename_stem>/<run_id>/`** (gitignored). Each run folder has **`command.txt`**; per source image, **`batch_outputs/<stem>/INDEX.txt`** lists all commands. Override the folder with **`--input-dir path/to/folder`**.
 
 ### Development
 

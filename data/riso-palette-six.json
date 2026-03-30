@@ -12,11 +12,6 @@
     "zType": "S-4287"
   },
   {
-    "name": "Black",
-    "hex": "#000000",
-    "pantone": "BLACK U"
-  },
-  {
     "name": "Aqua",
     "hex": "#5ec8e5",
     "pantone": "637 U",
